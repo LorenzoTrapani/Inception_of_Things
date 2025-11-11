@@ -27,6 +27,8 @@ cd p1
 vagrant up
 vagrant ssh lotrapanS  # or vagrant ssh lotrapanSW
 kubectl get nodes -o wide
+vagrant halt # to stop
+vagrant destroy # to remove
 ```
 
 ## P2: K3s and Three Simple Applications
