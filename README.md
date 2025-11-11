@@ -27,6 +27,7 @@ cd p1
 vagrant up
 vagrant ssh lotrapanS  # or vagrant ssh lotrapanSW
 kubectl get nodes -o wide
+
 vagrant halt # to stop VMs
 vagrant destroy -f # to remove VMs
 ```
