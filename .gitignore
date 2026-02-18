@@ -1,3 +1,4 @@
 */.vagrant
 p1/token
 p1/kubeconfig
+*.pdf
