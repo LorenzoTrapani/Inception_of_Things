@@ -1,5 +1,7 @@
 #!/bin/bash
+
 MASTER_IP=$1
+AGENT_IP=$2
 
 TIMEOUT=300
 ELAPSED=0
@@ -17,18 +19,14 @@ fi
 K3S_TOKEN=$(cat /vagrant/token)
 echo "Token found, connecting to master at $MASTER_IP"
 
-IFACE=$(ip -4 addr show | grep "192.168.56.111" | awk '{print $NF}')
+IFACE=$(ip -br -4 addr show | grep "$AGENT_IP" | awk '{print $1}')
 
 if [ -z "$IFACE" ]; then
-  echo "Interface with IP 192.168.56.111 not found, using default"
-  curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443 K3S_TOKEN=$K3S_TOKEN INSTALL_K3S_EXEC="agent --node-ip=192.168.56.111" sh -
+  echo "Interface with IP $AGENT_IP not found, using default"
+  curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443 K3S_TOKEN=$K3S_TOKEN INSTALL_K3S_EXEC="agent --node-ip=$AGENT_IP" sh -
 else
   echo "Using interface: $IFACE"
-  curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443 K3S_TOKEN=$K3S_TOKEN INSTALL_K3S_EXEC="agent --node-ip=192.168.56.111 --flannel-iface=$IFACE" sh -
+  curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443 K3S_TOKEN=$K3S_TOKEN INSTALL_K3S_EXEC="agent --node-ip=$AGENT_IP --flannel-iface=$IFACE" sh -
 fi
 
-sudo mkdir -p /home/vagrant/.kube
-sudo cp /vagrant/kubeconfig /home/vagrant/.kube/config
-sudo chown -R vagrant:vagrant /home/vagrant/.kube
-
-echo "Agent setup with kubectl complete"
+echo "K3s agent setup complete"

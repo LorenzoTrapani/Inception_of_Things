@@ -1,24 +1,31 @@
 #!/bin/bash
 
-IFACE=$(ip -4 addr show | grep "192.168.56.110" | awk '{print $NF}')
+MASTER_IP="192.168.56.110"
+
+IFACE=$(ip -br -4 addr show | grep "$MASTER_IP" | awk '{print $1}')
 
 if [ -z "$IFACE" ]; then
-  echo "Interface with IP 192.168.56.110 not found, using default"
-  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --node-ip=192.168.56.110 --write-kubeconfig-mode=644" sh -
+  echo "Interface with IP $MASTER_IP not found, using default"
+  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --node-ip=$MASTER_IP --write-kubeconfig-mode=644" sh -
 else
   echo "Using interface: $IFACE"
-  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --node-ip=192.168.56.110 --flannel-iface=$IFACE --write-kubeconfig-mode=644" sh -
+  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --node-ip=$MASTER_IP --flannel-iface=$IFACE --write-kubeconfig-mode=644" sh -
 fi
 
-sudo mkdir -p /home/vagrant/.kube
-sudo cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
-sudo sed -i 's/127.0.0.1/192.168.56.110/g' /home/vagrant/.kube/config
-sudo chown -R vagrant:vagrant /home/vagrant/.kube
+while ! systemctl is-active --quiet k3s; do
+  echo "Waiting for k3s to be active..."
+  sleep 3
+done
 
-K3S_TOKEN=$(sudo cat /var/lib/rancher/k3s/server/node-token)
+mkdir -p /home/vagrant/.kube
+cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
+sed -i "s/127.0.0.1/$MASTER_IP/g" /home/vagrant/.kube/config
+chown -R vagrant:vagrant /home/vagrant/.kube
+
+K3S_TOKEN=$(cat /var/lib/rancher/k3s/server/node-token)
 echo $K3S_TOKEN > /vagrant/token
 
-sudo cp /home/vagrant/.kube/config /vagrant/kubeconfig
-sudo chmod 644 /vagrant/kubeconfig
+cp /home/vagrant/.kube/config /vagrant/kubeconfig
+chmod 644 /vagrant/kubeconfig
 
 echo "K3s server ready, token and kubeconfig saved"
