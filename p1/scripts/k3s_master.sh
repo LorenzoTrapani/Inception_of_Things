@@ -28,4 +28,5 @@ echo $K3S_TOKEN > /vagrant/token
 cp /home/vagrant/.kube/config /vagrant/kubeconfig
 chmod 644 /vagrant/kubeconfig
 
-echo "K3s server ready, token and kubeconfig saved"
+echo "Token and kubeconfig saved"
+echo "K3s server ready"
