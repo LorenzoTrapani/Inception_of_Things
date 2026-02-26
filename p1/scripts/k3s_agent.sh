@@ -19,6 +19,14 @@ fi
 K3S_TOKEN=$(cat /vagrant/token)
 echo "Token found, connecting to master at $MASTER_IP"
 
+echo "Waiting for master API server at $MASTER_IP:6443..."
+until nc -z "$MASTER_IP" 6443 2>/dev/null; do
+  echo "Master API not ready yet..."
+  sleep 5
+done
+
+echo "Master API server is ready"
+
 IFACE=$(ip -br -4 addr show | grep "$AGENT_IP" | awk '{print $1}')
 
 if [ -z "$IFACE" ]; then
@@ -28,5 +36,9 @@ else
   echo "Using interface: $IFACE"
   curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443 K3S_TOKEN=$K3S_TOKEN INSTALL_K3S_EXEC="agent --node-ip=$AGENT_IP --flannel-iface=$IFACE" sh -
 fi
+
+sudo mkdir -p /home/vagrant/.kube
+sudo cp /vagrant/kubeconfig /home/vagrant/.kube/config
+sudo chown -R vagrant:vagrant /home/vagrant/.kube
 
 echo "K3s agent setup complete"

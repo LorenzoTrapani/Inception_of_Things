@@ -2,6 +2,9 @@
 
 MASTER_IP="192.168.56.110"
 
+# Remove stale artifacts from previous runs so the worker doesn't pick them up early
+rm -f /vagrant/token /vagrant/kubeconfig
+
 IFACE=$(ip -br -4 addr show | grep "$MASTER_IP" | awk '{print $1}')
 
 if [ -z "$IFACE" ]; then
@@ -30,3 +33,4 @@ chmod 644 /vagrant/kubeconfig
 
 echo "Token and kubeconfig saved"
 echo "K3s server ready"
+
