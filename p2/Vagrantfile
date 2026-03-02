@@ -1,0 +1,34 @@
+BOX         = "alvistack/ubuntu-24.04"
+MEMORY      = 2048
+CPUS        = 2
+HOST        = "lotrapanS"
+IP          = "192.168.56.110"
+
+Vagrant.configure("2") do |config|
+    config.vm.box = BOX
+    config.vm.synced_folder ".", "/vagrant", type: "nfs", nfs_version: 4
+
+    config.vm.provision "shell", inline: <<-SHELL
+        apt-get update -y
+        echo "#{IP} #{HOST}" | tee -a /etc/hosts
+    SHELL
+
+    config.vm.define HOST do |host|
+        host.vm.hostname = HOST
+        host.vm.network "private_network", ip: IP
+
+        host.vm.provision "shell", path: "scripts/run_server.sh"
+        host.vm.provision "shell", path: "scripts/deploy_apps.sh"
+
+        host.vm.provider "libvirt" do |vb|
+            vb.memory = MEMORY
+            vb.cpus = CPUS
+            vb.cpu_mode = "host-passthrough"
+            vb.graphics_type = "none"
+        end
+    end
+end
+
+
+
+    
