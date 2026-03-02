@@ -20,10 +20,16 @@ K3S_TOKEN=$(cat /vagrant/token)
 echo "Token found, connecting to master at $MASTER_IP"
 
 echo "Waiting for master API server at $MASTER_IP:6443..."
-until nc -z "$MASTER_IP" 6443 2>/dev/null; do
-  echo "Master API not ready yet..."
+while ! nc -z "$MASTER_IP" 6443 2>/dev/null && [ $ELAPSED -lt $TIMEOUT ]; do
+  echo "Master API not ready yet... ($ELAPSED/$TIMEOUT seconds)"
   sleep 5
+  ELAPSED=$((ELAPSED + 5))
 done
+
+if ! nc -z "$MASTER_IP" 6443 2>/dev/null; then
+  echo "Timeout waiting for master API server"
+  exit 1
+fi
 
 echo "Master API server is ready"
 

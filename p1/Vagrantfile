@@ -12,7 +12,6 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", type: "nfs", nfs_version: 4
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update -y
-    apt-get install -y netcat-openbsd
     echo "#{IP_MASTER} #{MASTER}" | tee -a /etc/hosts
     echo "#{IP_WORKER} #{WORKER}" | tee -a /etc/hosts
   SHELL
