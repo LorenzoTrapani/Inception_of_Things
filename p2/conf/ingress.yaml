@@ -1,0 +1,50 @@
+# ─── INGRESS ─────────────────────────────────────────────────────────────────
+# L'Ingress è il punto d'ingresso esterno del cluster.
+# K3s include Traefik di default come Ingress Controller: non serve installare
+# nulla, basta applicare questo file e Traefik lo legge automaticamente.
+#
+# Flusso completo:
+#   Browser → 192.168.56.110:80 → Traefik → legge HOST → Service → Pod
+apiVersion: networking.k8s.io/v1 #gruppo API di Kubernetes che gestisce le risorse di rete
+kind: Ingress
+metadata:
+  name: apps-ingress
+  namespace: apps
+spec:
+  ingressClassName: traefik
+  rules:
+  # ── Regola 1: HOST app1.com → app1-service ─────────────────────────────────
+  - host: app1.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix       # qualsiasi path che inizia con / (tutto il sito)
+        backend:
+          service:
+            name: app1-service 
+            port:
+              number: 80
+
+  # ── Regola 2: HOST app2.com → app2-service ─────────────────────────────────
+  - host: app2.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app2-service 
+            port:
+              number: 80
+
+  # ── Default: qualsiasi altro HOST → app3-service ───────────────────────────
+  # (o accede direttamente tramite IP), Traefik usa app3 come fallback.
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app3-service
+            port:
+              number: 80

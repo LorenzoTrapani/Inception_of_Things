@@ -20,9 +20,9 @@ spec:
     spec:
       containers:
       - name: app2
-        image: lotrapan/flask-app:18
+        image: nginxdemos/hello
         ports:
-        - containerPort: 5000
+        - containerPort: 80
 ---
 # Service ClusterIP: espone app2 internamente al cluster su porta 80.
 # Il Service fa load balancing automatico tra le 3 repliche del Deployment.
@@ -37,5 +37,5 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 5000
+    targetPort: 80
   type: ClusterIP

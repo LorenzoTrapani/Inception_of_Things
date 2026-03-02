@@ -21,9 +21,9 @@ spec:
     spec:
       containers:
       - name: app3
-        image: lotrapan/flask-app:18
+        image: nginxdemos/hello
         ports:
-        - containerPort: 5000
+        - containerPort: 80
 ---
 # Service ClusterIP: espone app3 internamente al cluster su porta 80.
 # Usato come defaultBackend nell'Ingress per le richieste senza HOST specifico.
@@ -38,5 +38,5 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 5000
+    targetPort: 80
   type: ClusterIP
