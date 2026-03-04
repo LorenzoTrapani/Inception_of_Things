@@ -64,3 +64,23 @@ All applications use the same container image (`paulbouwer/hello-kubernetes:1.10
 ## P3: K3d and Argo CD
 
 Coming soon - GitOps continuous deployment with K3d and Argo CD.
+
+---
+
+## K3s vs K3d
+
+| | K3s | K3d |
+|---|---|---|
+| **Cos'è** | Kubernetes leggero | Wrapper che mette K3s dentro Docker |
+| **Gira su** | VM / bare metal | Container Docker |
+| **Usato in** | P1 e P2 (su VM Vagrant) | P3 (sulla tua VM, senza Vagrant) |
+
+K3d usa Docker per simulare i nodi del cluster: non hai bisogno di Vagrant e VM separate. Tutto gira come container sulla tua macchina.
+
+
+<!-- CMD ARGOCD: -->
+argocd login localhost:8080          # autenticati
+argocd app list                      # lista applicazioni
+argocd app sync wil-playground       # sincronizza manualmente
+argocd app get wil-playground        # vedi stato dettagliato
+
