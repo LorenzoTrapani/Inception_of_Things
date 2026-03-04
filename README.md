@@ -59,7 +59,7 @@ curl -H "Host: app2.com" 192.168.56.110
 curl 192.168.56.110  # app3 (default)
 ```
 
-All applications use the same container image (`nginxdemos/hello`) but are routed differently based on the hostname.
+All applications use the same container image (`paulbouwer/hello-kubernetes:1.10`) but are routed differently based on the hostname.
 
 ## P3: K3d and Argo CD
 
