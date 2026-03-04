@@ -7,7 +7,7 @@ GREEN='\033[0;32m'
 ORANGE='\033[38;5;208m'
 RESET='\033[0m'
 
-CLUSTER_NAME="iot-cluster"
+CLUSTER_NAME="lotrapanCluster"
 REAL_USER="${SUDO_USER:-$USER}"
 REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
 
