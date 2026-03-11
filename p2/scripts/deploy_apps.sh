@@ -22,13 +22,10 @@ if [ $ELAPSED -ge $TIMEOUT ]; then
   exit 1
 fi
 
-# Crea il namespace "apps" dove vivranno tutte e 3 le applicazioni.
-# Isola le risorse dal namespace default.
 echo "Creating apps namespace..."
 kubectl create namespace apps
 
-# Imposta "apps" come namespace di default per il contesto corrente,
-# così i comandi kubectl successivi non richiedono -n apps esplicito.
+# Imposta "apps" come namespace di default per il contesto corrente
 echo "Switching to apps namespace..."
 kubectl config set-context --current --namespace=apps
 

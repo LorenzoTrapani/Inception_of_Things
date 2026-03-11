@@ -9,7 +9,6 @@ apiVersion: networking.k8s.io/v1 #gruppo API di Kubernetes che gestisce le risor
 kind: Ingress
 metadata:
   name: apps-ingress
-  namespace: apps
 spec:
   ingressClassName: traefik
   rules:
