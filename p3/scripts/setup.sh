@@ -17,7 +17,7 @@ ARGOCD_VERSION="v2.14.2"
 
 if ! k3d cluster list | grep -q "^${CLUSTER_NAME}"; then
     echo -e "${ORANGE}Creating K3d cluster: $CLUSTER_NAME...${RESET}"
-    k3d cluster create "$CLUSTER_NAME" -p 8888:30420
+    k3d cluster create "$CLUSTER_NAME" -p 8888:30420 -p 8046:30046
     echo -e "${GREEN}Cluster '$CLUSTER_NAME' created${RESET}"
 else
     echo -e "${GREEN}Cluster '$CLUSTER_NAME' already exists${RESET}"
@@ -71,7 +71,11 @@ PASSWORD=$(kubectl get secret argocd-initial-admin-secret \
     -o jsonpath="{.data.password}" | base64 -d)
 
 echo -e "${ORANGE}Logging into ArgoCD...${RESET}"
-argocd login localhost:8888 --insecure --username admin --password "$PASSWORD"
+for i in $(seq 1 10); do
+    argocd login localhost:8888 --insecure --username admin --password "$PASSWORD" 2>/dev/null && break
+    echo -e "${ORANGE}Waiting for ArgoCD gRPC... ($i/10)${RESET}"
+    sleep 5
+done
 
 echo -e "${BLUE}=== ArgoCD ready ===${RESET}"
 echo -e "UI:       https://localhost:8888"

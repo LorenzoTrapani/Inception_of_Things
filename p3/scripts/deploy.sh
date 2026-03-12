@@ -20,7 +20,7 @@ else
     echo -e "${ORANGE}Creating ArgoCD application...${RESET}"
     argocd app create "$APP_NAME" \
         --repo "$REPO_URL" \
-        --path p3/confs \
+        --path p3/app \
         --dest-server https://kubernetes.default.svc \
         --dest-namespace dev \
         --sync-policy automated \
