@@ -15,7 +15,7 @@ ARGOCD_VERSION="v2.14.2"
 
 if ! k3d cluster list | grep -q "^${CLUSTER_NAME}"; then
     echo -e "${ORANGE}Creating K3d cluster: $CLUSTER_NAME...${RESET}"
-    k3d cluster create "$CLUSTER_NAME" -p 8888:30420 -p 8046:30046
+    k3d cluster create "$CLUSTER_NAME" -p 8888:30420 
     echo -e "${GREEN}Cluster '$CLUSTER_NAME' created${RESET}"
 else
     echo -e "${GREEN}Cluster '$CLUSTER_NAME' already exists${RESET}"
